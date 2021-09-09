@@ -1,3 +1,6 @@
+To use this code, please first install GLPK (v.5 or later). After running "make" you should be able to replicate all results using the commands below.
+
+
 Varying T:
 
 
