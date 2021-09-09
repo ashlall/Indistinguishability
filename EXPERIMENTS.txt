@@ -1,0 +1,51 @@
+Varying T:
+
+
+./run T nba.txt 0.01 0.01 5 5 B 0
+
+./run T island.txt 0.01 0.01 5 5 B 0
+
+./run T a4-100000.txt 0.01 0.01 5 5 B 0
+
+
+delta = 0
+
+
+Vary q: 
+
+./run Q nba.txt 0.01 0 5 5 B 0
+
+./run Q island.txt 0.01 0 5 5 B 0
+
+./run Q a4-100000.txt 0.01 0 5 5 B 0
+
+Vary s:
+./run S nba.txt 0.01 0 5 5 B 0
+
+./run S island.txt 0.01 0 5 5 B 0
+
+./run S a4-100000.txt 0.01 0 5 5 B 0
+
+
+Fix n :
+./run N nba.txt 0.01 0 5 5 B 0
+
+./run N island.txt 0.01 0 5 5 B 0
+
+./run N a4-100000.txt 0.01 0 5 5 B 0
+
+Vary epsilon:
+./run E nba.txt 0.01 0 5 5 B 0
+
+./run E island.txt 0.01 0 5 5 B 0
+
+./run E a4-100000.txt 0.01 0 5 5 B 0
+
+
+Vary delta:
+./run D nba.txt 0.01 0 5 5 B 0
+
+./run D island.txt 0.01 0 5 5 B 0
+
+./run D a4-100000.txt 0.01 0 5 5 B 0
+

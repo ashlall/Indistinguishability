@@ -1,0 +1,141 @@
+file = 2d.txt
+epsilon = 0.010000
+n = 100000
+skyline size = 42
+c-skyline size = 789
+-----------------------------------------------
+|         Method | # of Questions |  Set size |
+-----------------------------------------------
+|   Ground Truth |              - |       346 |
+-----------------------------------------------
+started in get extreme
+created normal1
+gets here 2
+created normal
+added hyperplane
+created normal
+added hyperplane
+and here
+here too
+here as well
+2
+3
+s = 2
+Points in S: 
+0.993350 0.016210 
+0.992558 0.043599 
+Points in ext_vec:
+-1.000000 0.000000 
+0.000000 -1.000000 
+Testing 0
+backed up, ext_vec has size 2
+Points in ext_vec:
+-1.000000 0.000000 
+0.000000 -1.000000 
+updated ext_vec, now has size 3
+Points in ext_vec:
+-1.000000 0.000000 
+0.000000 -1.000000 
+-0.028905 0.999582 
+ready to prune
+started in get extreme
+created normal1
+gets here 3
+created normal
+added hyperplane
+created normal
+added hyperplane
+created normal
+added hyperplane
+and here
+here too
+here as well
+2
+3
+did dom thing
+set parameters
+made r-tree
+Made it to while
+done with while
+pruned
+backed up, ext_vec has size 2
+Points in ext_vec:
+-1.000000 0.000000 
+0.000000 -1.000000 
+updated ext_vec, now has size 3
+Points in ext_vec:
+-1.000000 0.000000 
+0.000000 -1.000000 
+0.028905 -0.999582 
+ready to prune
+started in get extreme
+created normal1
+gets here 3
+created normal
+added hyperplane
+created normal
+added hyperplane
+created normal
+added hyperplane
+and here
+here too
+here as well
+2
+3
+did dom thing
+set parameters
+made r-tree
+Made it to while
+done with while
+pruned
+s = 2
+Points in S: 
+0.993350 0.016210 
+0.992558 0.043599 
+Points in ext_vec:
+-1.000000 0.000000 
+0.000000 -1.000000 
+Testing 1
+backed up, ext_vec has size 2
+Points in ext_vec:
+-1.000000 0.000000 
+0.000000 -1.000000 
+updated ext_vec, now has size 3
+Points in ext_vec:
+-1.000000 0.000000 
+0.000000 -1.000000 
+-0.028905 0.999582 
+ready to prune
+started in get extreme
+created normal1
+gets here 3
+created normal
+added hyperplane
+created normal
+added hyperplane
+created normal
+added hyperplane
+and here
+here too
+here as well
+2
+3
+did dom thing
+set parameters
+made r-tree
+Made it to while
+done with while
+pruned
+backed up, ext_vec has size 2
+Points in ext_vec:
+-1.000000 0.000000 
+0.000000 -1.000000 
+updated ext_vec, now has size 3
+Points in ext_vec:
+-1.000000 0.000000 
+0.000000 -1.000000 
+0.028905 -0.999582 
+ready to prune
+started in get extreme
+created normal1
+gets here 3
