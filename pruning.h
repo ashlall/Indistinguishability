@@ -46,5 +46,7 @@ int dom(point_t* p_i, point_t* p_j, vector<point_t*> ext_pts, hyperplane_t* hp, 
 // Compute the width of the feasible region for the MinR algorithm
 double get_R_width(vector<point_t*> ext_pts);
 
+// Compute the diameter of the feasible region for the MinD algorithm
+double get_R_diameter(vector<point_t*> ext_pts);
 
 #endif

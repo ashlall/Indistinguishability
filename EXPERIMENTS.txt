@@ -1,54 +1,155 @@
-To use this code, please first install GLPK (v.5 or later). After running "make" you should be able to replicate all results using the commands below.
-
+NOTE: Do NOT run code on an online drive (e.g., Novell drive) that may go offline (even temporarily) as the code needs to write to file frequently.
 
 Varying T:
 
 
-./run T nba.txt 0.01 0.01 5 5 B 0
 
-./run T island.txt 0.01 0.01 5 5 B 0
+./run T island.txt 0.05 0.0 2 6 B 0
 
-./run T a4-100000.txt 0.01 0.01 5 5 B 0
+./run T a3-100000.txt 0.05 0.0 3 9 B 0
+./run T nba.txt 0.05 0.0 4 12 B 0
+
+
+
 
 
 delta = 0
 
 
+
+
+
 Vary q: 
+./run Q island.txt 0.05 0.0 2 6 B 0
 
-./run Q nba.txt 0.01 0 5 5 B 0
+./run Q a3-100000.txt 0.05 0.0 3 9 B 0
+./run Q nba.txt 0.05 0.0 4 12 B 0
 
-./run Q island.txt 0.01 0 5 5 B 0
 
-./run Q a4-100000.txt 0.01 0 5 5 B 0
+
+
+
+
 
 Vary s:
-./run S nba.txt 0.01 0 5 5 B 0
+./run S island.txt 0.05 0.0 2 6 B 0
 
-./run S island.txt 0.01 0 5 5 B 0
+./run S a3-100000.txt 0.05 0.0 3 9 B 0
+./run S nba.txt 0.05 0.0 4 12 B 0
 
-./run S a4-100000.txt 0.01 0 5 5 B 0
 
 
-Fix n :
-./run N nba.txt 0.01 0 5 5 B 0
 
-./run N island.txt 0.01 0 5 5 B 0
 
-./run N a4-100000.txt 0.01 0 5 5 B 0
+
+
+
+Fix pointshown (to 24):
+./run P island.txt 0.05 0.0 2 6 B 0
+
+./run P a3-100000.txt 0.05 0.0 3 9 B 0
+./run P nba.txt 0.05 0.0 4 12 B 0
+
+
+
+
+
+
+
 
 Vary epsilon:
-./run E nba.txt 0.01 0 5 5 B 0
+./run E island.txt 0.05 0.0 2 6 B 0
 
-./run E island.txt 0.01 0 5 5 B 0
+./run E a3-100000.txt 0.05 0.0 3 9 B 0
+./run E nba.txt 0.05 0.0 4 12 B 0
 
-./run E a4-100000.txt 0.01 0 5 5 B 0
 
 
-Vary delta:
-./run D nba.txt 0.01 0 5 5 B 0
 
-./run D island.txt 0.01 0 5 5 B 0
 
-./run D a4-100000.txt 0.01 0 5 5 B 0
+
+Vary n (also running time):
+
+./run n island.txt 0.05 0.0 3 9 B 0
+
+
+
+
+Vary d (also running time): 
+
+./run d island.txt 0.05 0.0 6 18 B 0
+
+
+Running time:
+./run t island.txt 0.05 0.0 2 6 B 0
+./run t a3-100000.txt 0.05 0.0 3 9 B 0
+./run t nba.txt 0.05 0.0 4 12 B 0
+
+
+
+
+delta > 0
+
+
+Vary delta:
+./run D island.txt 0.05 0.0 2 6 B 0
+
+./run D a3-100000.txt 0.05 0.0 3 9 B 0
+./run D nba.txt 0.05 0.0 4 12 B 0
+
+
+
+Vary both epsilon and delta:
+./run B island.txt 0.05 0.0 2 6 B 0
+
+./run B a3-100000.txt 0.05 0.0 3 9 B 0
+./run B nba.txt 0.05 0.0 4 12 B 0
+
+
+
+
+
+
+
+Running time:
+
+./run t island.txt 0.05 0.05 2 6 B 0
+./run t a3-100000.txt 0.05 0.05 3 9 B 0
+./run t nba.txt 0.05 0.05 4 12 B 0
+
+
+
+
+
+
+
+
+Vary n (also running time):
+
+./run n island.txt 0.05 0.05 3 9 B 0
+
+
+
+
+Vary d (also running time): 
+
+./run d island.txt 0.05 0.05 6 18 B 0
+
+
+
+
+
+
+Running time:
+
+./run t island.txt 0.05 0.05 2 6 B 0
+./run t a3-100000.txt 0.05 0.05 3 9 B 0
+./run t nba.txt 0.05 0.05 4 12 B 0
+
+
+
+
+ALL:
+./run T island.txt 0.05 0.0 2 6 B 0  ; ./run T a3-100000.txt 0.05 0.0 3 9 B 0 ; ./run T nba.txt 0.05 0.0 4 12 B 0 ; ./run Q island.txt 0.05 0.0 2 6 B 0; ./run Q a3-100000.txt 0.05 0.0 3 9 B 0; ./run Q nba.txt 0.05 0.0 4 12 B 0; ./run S island.txt 0.05 0.0 2 6 B 0 ; ./run S a3-100000.txt 0.05 0.0 3 9 B 0 ; ./run S nba.txt 0.05 0.0 4 12 B 0 ; ./run P island.txt 0.05 0.0 2 6 B 0; ./run P a3-100000.txt 0.05 0.0 3 9 B 0; ./run P nba.txt 0.05 0.0 4 12 B 0; ./run E island.txt 0.05 0.0 2 6 B 0  ; ./run E a3-100000.txt 0.05 0.0 3 9 B 0; ./run E nba.txt 0.05 0.0 4 12 B 0 ; ./run n island.txt 0.05 0.0 3 9 B 0 ; ./run d island.txt 0.05 0.0 6 18 B 0 ; ./run t island.txt 0.05 0.0 2 6 B 0; ./run t a3-100000.txt 0.05 0.0 3 9 B 0; ./run t nba.txt 0.05 0.0 4 12 B 0 ; ./run D island.txt 0.05 0.0 2 6 B 0 ; ./run D a3-100000.txt 0.05 0.0 3 9 B 0; ./run D nba.txt 0.05 0.0 4 12 B 0 ; ./run B island.txt 0.05 0.0 2 6 B 0 ; ./run B a3-100000.txt 0.05 0.0 3 9 B 0 ; ./run B nba.txt 0.05 0.0 4 12 B 0 ; ./run t island.txt 0.05 0.05 2 6 B 0; ./run t a3-100000.txt 0.05 0.05 3 9 B 0; ./run t nba.txt 0.05 0.05 4 12 B 0 ; ./run n island.txt 0.05 0.05 3 9 B 0  ; ./run d island.txt 0.05 0.05 6 18 B 0 ; ./run t island.txt 0.05 0.05 2 6 B 0 ; ./run t a3-100000.txt 0.05 0.05 3 9 B 0; ./run t nba.txt 0.05 0.05 4 12 B 0
+
 

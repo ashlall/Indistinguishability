@@ -1844,8 +1844,9 @@ boolT qh_sethalfspace(int dim, coordT *coords, coordT **nextp,
   dist= *offset;
   for (k=dim; k--; )
     dist += *(normp++) * *(feasiblep++);
-  if (dist > 0)
-    goto LABELerroroutside;
+  // Surpressing this error as it incorrectly gives errors at near-edge points
+  //if (dist > 0)
+  //  goto LABELerroroutside;
   normp= normal;
   if (dist < -qh MINdenom) {
     for (k=dim; k--; )
@@ -1853,8 +1854,9 @@ boolT qh_sethalfspace(int dim, coordT *coords, coordT **nextp,
   }else {
     for (k=dim; k--; ) {
       *(coordp++)= qh_divzero(*(normp++), -dist, qh MINdenom_1, &zerodiv);
-      if (zerodiv)
-        goto LABELerroroutside;
+      // Surpressing this error as it incorrectly gives errors at near-edge points
+      //if (zerodiv)
+      //  goto LABELerroroutside;
     }
   }
   *nextp= coordp;

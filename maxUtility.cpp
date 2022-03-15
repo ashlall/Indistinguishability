@@ -484,7 +484,11 @@ vector<int> generate_S(point_set_t* P, vector<int>& C_idx, int s, vector<point_t
 		  
 		  // release newly created points in ext_vec_backup
 		  for (int j = ext_vec.size(); j < ext_vec_backup.size(); ++j)
-		          release_point(ext_vec_backup[j]);
+		    release_point(ext_vec_backup[j]);
+
+		  // release points in new_ext_pts
+		  for(int j = 0; j < new_ext_pts.size(); ++j)
+		    release_point(new_ext_pts[j]);
 		}
 		
 		if (avg_R_width < best_R_width) //(worst_R_width < best_R_width)
@@ -504,6 +508,182 @@ vector<int> generate_S(point_set_t* P, vector<int>& C_idx, int s, vector<point_t
 	    //for(int j = 0; j < S.size(); ++j)
 	    //  print_point(P->points[ C_idx[ S[j] ] ]);
 	  }
+	else if (cmp_option == MIND)
+          {
+            double rr = 1;
+            vector<int> best_S;
+
+            vector<point_t*> ext_pts;
+            vector<point_t*> hyperplanes;
+            hyperplane_t* hp = NULL;
+
+            if(dom_option == HYPER_PLANE)
+              ext_pts = get_extreme_pts(ext_vec); // in Hyperplane Pruning, we need the set of extreme points of R
+            else
+              {
+                // in Conical Pruning, we need bounding hyperplanes for the conical hull
+                get_hyperplanes(ext_vec, hp, hyperplanes);
+                if(stop_option != NO_BOUND) // if an upper bound on the regret ratio is needed, we need the set of extreme points of R
+                  ext_pts = get_extreme_pts(ext_vec);
+              }
+
+            if (ext_pts.size() == 0)
+              {
+                cout << "ext_pts has size 0 at start of MIND --- problematic" << endl;
+                cout << "Ext vec:" << endl;
+                for(int i = 0; i < ext_vec.size(); ++i)
+                  print_point(ext_vec[i]);
+              }
+
+            //cout << "computed ext_pts of size " << ext_pts.size() << endl;
+
+            // the upper bound of the regret ratio based on (the extreme ponits of) R
+            rr = 1;
+
+	    // run the adapted squential skyline algorihtm
+            int* sl = new int[C_idx.size()]; // this will hold the indexes of C_idx that are on the skyline
+            int sl_size = 0;
+            for (int i = 0; i < C_idx.size(); ++i)
+              {
+                int dominated = 0;
+                point_t* pt = P->points[C_idx[i]];
+
+                // check if pt is dominated by the skyline so far
+                for (int j = 0; j < sl_size && !dominated; ++j)
+                  {
+                    if(dom(P->points[ C_idx[ sl[j] ] ], pt, ext_pts, hp, hyperplanes, ext_vec, dom_option, 0))
+                      dominated = 1;
+                  }
+
+                if (!dominated)
+                  {
+                    // eliminate any points in current skyline that it dominates
+                    int m = sl_size;
+                    sl_size = 0;
+                    for (int j = 0; j < m; ++j)
+                      {
+
+                        if(!dom(pt, P->points[ C_idx[ sl[j] ] ], ext_pts, hp, hyperplanes, ext_vec, dom_option, 0))
+                          sl[sl_size++] = sl[j];
+                      }
+
+                    // add this point as well
+                    sl[sl_size++] = i;
+                  }
+              }
+
+            //printf("Skyline: %d points\n", sl_size);
+            //for(int i = 0; i < sl_size; ++i)
+            //  print_point(P->points[ C_idx [ sl[i]] ]);
+
+	    double best_R_diameter = get_R_diameter(ext_pts) * 2;
+            //cout << "initial R diameter = " << best_R_diameter << endl;
+
+            // try 'repeats' random options
+            for (int rep = 0; rep < repeats; ++rep)
+              {
+                // randomly select at most s non-overlaping cars in the skyline
+                S.clear();
+                while(S.size() < s && S.size() < sl_size) //C_idx.size())
+                  {
+                    int idx = rand() % sl_size; //C_idx.size();
+
+                    bool isNew = true;
+                    for(int i = 0; i < S.size(); i++)
+                      {
+                        if(S[i] == sl[idx]) // C_idx[idx])
+                          {
+                            isNew = false;
+                            break;
+                          }
+                      }
+                    if(isNew)
+                      S.push_back(sl[idx]); //idx);
+                  }
+
+                //cout << "S:\n";
+                //for(int j = 0; j < S.size(); ++j)
+                //  print_point(P->points[ C_idx[ S[j] ] ]);
+
+
+                // if there are fewer than s points in the skyline, just return them
+                if (S.size() < s)
+		  {
+		    delete[] sl;
+		    return S;
+		  }
+
+		//cout << "s = " << s << endl;
+                //cout << "Points in S: " << endl;
+                //for(int j = 0; j < s; ++j)
+                //  print_point(P->points[ S[j] ]);
+                //cout << "Points in ext_vec:" << endl;
+                //for (int j = 0; j < ext_vec.size(); ++j)
+                //  print_point(ext_vec[j]);
+                //cout << "Testing " << repeats << endl;
+
+
+                vector<point_t*> S_real(S.size());
+                for(int i = 0; i < S.size(); ++i)
+                  S_real[i] = P->points[ C_idx[ S[i] ] ];
+
+                double worst_R_diameter = 0.0;
+                double avg_R_diameter = 0.0;
+
+                for (int max_i = 0; max_i < S.size(); ++max_i)
+		  {
+		    // back up variables
+		    C_idx_backup = C_idx;
+		    ext_vec_backup = ext_vec;
+
+		    // generate the options for user selection and update the extreme vectors based on the user feedback
+		    update_ext_vec(P, S_real, C_idx_backup, max_i, s, ext_vec_backup, current_best_idx, last_best, frame, cmp_option, delta);
+
+		    //DON'T update candidate set
+		    //if(prune_option == SQL)
+		    //  sql_pruning(P, C_idx_backup, ext_vec_backup, rr, stop_option, dom_option, epsilon);
+		    //else
+		    //  rtree_pruning(P, C_idx_backup, ext_vec_backup, rr, stop_option, dom_option, epsilon);
+
+
+		    vector<point_t*> new_ext_pts = get_extreme_pts(ext_vec_backup);
+		    double R_diameter = get_R_diameter(new_ext_pts);
+
+		    // calculate number of points eliminated and update min
+		    if (R_diameter > worst_R_diameter)
+		      worst_R_diameter = R_diameter;
+
+		    // calculate average as well
+		    avg_R_diameter += R_diameter / s;
+
+		    //cout << C_idx_backup.size() << " " << most_left << endl;
+
+		    // release newly created points in ext_vec_backup
+		    for (int j = ext_vec.size(); j < ext_vec_backup.size(); ++j)
+		      release_point(ext_vec_backup[j]);
+
+		    // release points in new_ext_pts
+		    for(int j = 0; j < new_ext_pts.size(); ++j)
+		      release_point(new_ext_pts[j]);
+		  }
+
+                if (avg_R_diameter < best_R_diameter) //(worst_R_diameter < best_R_diameter)
+		  {
+		    best_S = S;
+		    best_R_diameter = avg_R_diameter; //worst_R_diameter;
+		  }
+
+                //cout << "Best R diameter : " << best_R_diameter << endl;
+
+              }
+
+            delete[] sl;
+            S = best_S;
+            //cout << "Best diameter = " << best_R_diameter << endl;
+            //cout << "S has " << S.size() << " elements\n";
+            //for(int j = 0; j < S.size(); ++j)
+            //  print_point(P->points[ C_idx[ S[j] ] ]);
+	}
 	else // for testing only. Do not use this!
 	{
 		vector<point_t*> rays;
@@ -729,6 +909,8 @@ double max_utility(point_set_t* P, point_t* u, int s,  double epsilon, double de
 		max_value = value;
 	  }
 
+
+	/*
 	int inI = 0;
 	double alpha = 0.0;
 	for(int i = 0; i < C_idx.size(); i++)
@@ -742,6 +924,29 @@ double max_utility(point_set_t* P, point_t* u, int s,  double epsilon, double de
 
 	  }
 	printf("Found %d in I and %d false positives and alpha was %lf.\n", inI, C_idx.size() - inI, alpha);
+	*/
+
+	int inI = 0;
+	double alpha = 0.0;
+	double avg_effective_epsilon = 0.0, max_effective_epsilon = 0.0;
+	for(int i = 0; i < C_idx.size(); i++)
+	{
+	  double value = dot_prod(u, P->points[C_idx[i]]);
+	  if(value * (1 + epsilon) > max_value)
+	    inI++;
+	  else
+	  {
+	    avg_effective_epsilon += max_value/value - 1.0;
+	    if (max_value/value - 1.0 > max_effective_epsilon)
+	      max_effective_epsilon = max_value/value - 1.0;
+
+	    if (max_value - value * (1 + epsilon) > alpha)
+	      alpha = max_value - value * (1 + epsilon);
+	  }
+	}
+	if (C_idx.size() - inI > 0)
+	  avg_effective_epsilon /= C_idx.size() - inI;
+	printf("Found %d in I; %d false positives; alpha was %lf; avg effective epsilon was %lf.; max effective epsilon was %lf\n", inI, C_idx.size() - inI, alpha, avg_effective_epsilon, max_effective_epsilon);
 
 	// get the final result 
 	point_t* result = P->points[get_current_best_pt(P, C_idx, ext_vec)];
@@ -925,18 +1130,28 @@ double max_utility_fake(point_set_t* P, point_t* u, int s,  double epsilon, doub
     if(value > max_value)
       max_value = value;
   }
+
   int inI = 0;
   double alpha = 0.0;
+  double avg_effective_epsilon = 0.0, max_effective_epsilon = 0.0;
   for(int i = 0; i < C_idx.size(); i++)
     {
       double value = dot_prod(u, P->points[C_idx[i]]);
       if(value * (1 + epsilon) > max_value)
 	inI++;
+      else
+	{
+	  avg_effective_epsilon += max_value/value - 1.0;
+	  if (max_value/value - 1.0 > max_effective_epsilon)
+	    max_effective_epsilon = max_value/value - 1.0;
 
-      if (max_value - value * (1 + epsilon) > alpha)
-	alpha = max_value - value * (1 + epsilon);
+	  if (max_value - value * (1 + epsilon) > alpha)
+	    alpha = max_value - value * (1 + epsilon);
+	}
     }
-  printf("Found %d in I and %d false positives and alpha was %lf.\n", inI, C_idx.size() - inI, alpha);
+  if (C_idx.size() - inI > 0)
+    avg_effective_epsilon /= C_idx.size() - inI;
+  printf("Found %d in I; %d false positives; alpha was %lf; avg effective epsilon was %lf; max effective epsilon was %lf.\n", inI, C_idx.size() - inI, alpha, avg_effective_epsilon, max_effective_epsilon);
   Csize = C_idx.size();
 
   return alpha;
@@ -1056,19 +1271,30 @@ double random_fake(point_set_t* P, point_t* u, int s,  double epsilon, double de
       if(value > max_value)
 	max_value = value;
     }
+
   int inI = 0;
   double alpha = 0.0;
+  double avg_effective_epsilon = 0.0, max_effective_epsilon = 0.0;
   for(int i = 0; i < C_idx.size(); i++)
     {
       double value = dot_prod(u, P->points[C_idx[i]]);
       if(value * (1 + epsilon) > max_value)
-        inI++;
+	inI++;
+      else
+	{
+	  if (max_value/value - 1.0 > max_effective_epsilon)
+            max_effective_epsilon = max_value/value - 1.0;
 
-      if (max_value - value * (1 + epsilon) > alpha)
-        alpha = max_value - value * (1 + epsilon);
+	  avg_effective_epsilon += max_value/value - 1.0;
+
+	  if (max_value - value * (1 + epsilon) > alpha)
+	    alpha = max_value - value * (1 + epsilon);
+	}
     }
-  printf("Found %d in I and %d false positives and alpha was %lf.\n", inI, C_idx.size() - inI, alpha);
-
+  if (C_idx.size() - inI > 0)
+    avg_effective_epsilon /= C_idx.size() - inI;
+  printf("Found %d in I; %d false positives; alpha was %lf; avg effective epsilon was %lf; max effective epsilon was %lf.\n", inI, C_idx.size() - inI, alpha, avg_effective_epsilon, max_effective_epsilon);
+  
   Csize = C_idx.size();
 
   for(int i = 0; i < ext_pts.size(); i++)

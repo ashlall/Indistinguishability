@@ -852,3 +852,27 @@ double get_R_width(vector<point_t*> ext_pts)
 
   return width;
 }
+
+double get_R_diameter(vector<point_t*> ext_pts)
+{
+  if(ext_pts.size() <= 1)
+    return 0;
+
+  double diameter2 = 0.0;
+  int dim = ext_pts[0]->dim;
+
+   for(int i = 0; i < ext_pts.size(); i++)
+      for(int j = 0; j < ext_pts.size(); j++)
+	if (i != j)
+	{
+	  point_t* pt1 = ext_pts[i];
+	  point_t* pt2 = ext_pts[j];
+	  double distance2 = 0.0;
+	  for(int k = 0; k < dim; k++)
+	    distance2 += (pt1->coord[k] - pt2->coord[k]) * (pt1->coord[k] - pt2->coord[k]);
+	  if (distance2 > diameter2)
+	    diameter2 = distance2;
+        }
+ 
+   return sqrt(diameter2);
+}

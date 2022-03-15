@@ -19,6 +19,7 @@
 #define GREEDY 4
 #define MINC 5
 #define MINR 6
+#define MIND 7
 
 using namespace std;
 
