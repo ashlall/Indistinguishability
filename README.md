@@ -23,6 +23,8 @@ INSTALLATION:
 REPRODUCIBILITY:
 
 To reproduce the experiments in the paper 'The Indistinguishability Query' please consult EXPERIMENTS.txt for exact command line options. For example,
+
 ./run Q a3-100000.txt 0.05 0.0 3 9 B 0
+
 will run the code for varying the number of questions asked of the user (q) on the data set a3-100000.txt (in the input/ folder) with epsilon=0.5, delta=0.0, s=3 tuples per round, running (B)oth real and artificial tuple queries, and a random seed of 0. While any random seed may be used, the experiments consistently used a seed value of 0 for reproducibility.
 
