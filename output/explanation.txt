@@ -1,0 +1,1 @@
+This folder is needed by the code for output and temporary files while running.
